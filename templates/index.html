@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast UI</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Error Message -->
+        {% if error %}
+            <div class="error-message">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Current Weather Section -->
+        <div class="current-weather">
+            <div class="location">
+                <form method="POST" action="{% url 'predict_weather' %}">
+                    {% csrf_token %}
+                    <input type="text" name="city" placeholder="Enter city name" value="{{ location|default:'Klang' }}" required>
+                    <button type="submit" class="search-btn">🔍</button>
+                </form>
+            </div>
+            <h1 class="temperature">{{ current_temp|default:"N/A" }}°</h1>
+            <p class="feels-like">FEELS LIKE: {{ feels_like|default:"N/A" }}°</p>
+            <div class="weather-details">
+                <p>{{ description|title|default:"N/A" }}</p>
+                <p>{{ city|default:"N/A" }}, {{ country|default:"N/A" }} - {{ date|default:"N/A" }}</p>
+                <p>Wind: {{ wind_speed|default:"N/A" }} km/h | Visibility: {{ visibility|default:"N/A" }} m | Pressure: {{ pressure|default:"N/A" }} mb</p>
+                <p>Humidity: {{ humidity|default:"N/A" }}% | Clouds: {{ clouds|default:"N/A" }}%</p>
+                <p>Max Temp: {{ temp_max|default:"N/A" }}° | Min Temp: {{ temp_min|default:"N/A" }}°</p>
+            </div>
+        </div>
+
+        <!-- Hourly Forecast Section -->
+        <div class="hourly-forecast">
+            <h2>Hourly Forecast</h2>
+            <div class="forecast-cards">
+                <div class="forecast-card">
+                    <p class="time">{{ t1|default:"N/A" }}</p>
+                    <p class="temp">{{ temp1|default:"N/A" }}°</p>
+                    <p class="humidity">Humidity: {{ h1|default:"N/A" }}%</p>
+                </div>
+                <div class="forecast-card">
+                    <p class="time">{{ t2|default:"N/A" }}</p>
+                    <p class="temp">{{ temp2|default:"N/A" }}°</p>
+                    <p class="humidity">Humidity: {{ h2|default:"N/A" }}%</p>
+                </div>
+                <div class="forecast-card">
+                    <p class="time">{{ t3|default:"N/A" }}</p>
+                    <p class="temp">{{ temp3|default:"N/A" }}°</p>
+                    <p class="humidity">Humidity: {{ h3|default:"N/A" }}%</p>
+                </div>
+                <div class="forecast-card">
+                    <p class="time">{{ t4|default:"N/A" }}</p>
+                    <p class="temp">{{ temp4|default:"N/A" }}°</p>
+                    <p class="humidity">Humidity: {{ h4|default:"N/A" }}%</p>
+                </div>
+                <div class="forecast-card">
+                    <p class="time">{{ t5|default:"N/A" }}</p>
+                    <p class="temp">{{ temp5|default:"N/A" }}°</p>
+                    <p class="humidity">Humidity: {{ h5|default:"N/A" }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const weatherDescription = "{{ description|lower|default:'default' }}";
+            const body = document.body;
+
+            // Debug logs
+            console.log("Weather Description:", weatherDescription);
+            console.log("Body element:", body);
+
+            // Function to set background image with error handling
+            const setBackgroundImage = (imageUrl) => {
+                console.log("Attempting to load image:", imageUrl);
+                const img = new Image();
+                img.src = imageUrl;
+                img.onload = () => {
+                    console.log(`Successfully loaded image: ${imageUrl}`);
+                    body.style.backgroundImage = `url('${imageUrl}')`;
+                };
+                img.onerror = () => {
+                    console.error(`Failed to load image: ${imageUrl}`);
+                    body.style.backgroundImage = 'none'; // Reset to allow CSS fallback gradient
+                };
+            };
+
+            // Map weather descriptions to background images
+            if (weatherDescription.includes('rain')) {
+                setBackgroundImage("{% static 'images/rain.jpg' %}");
+            } else if (weatherDescription.includes('cloud')) {
+                setBackgroundImage("{% static 'images/cloudy.jpg' %}");
+            } else if (weatherDescription.includes('sun') || weatherDescription.includes('clear')) {
+                setBackgroundImage("{% static 'images/sunny.jpg' %}");
+            } else if (weatherDescription.includes('snow')) {
+                setBackgroundImage("{% static 'images/snow.jpg' %}");
+            } else {
+                const defaultImages = [
+                    "{% static 'images/default1.jpg' %}",
+                    "{% static 'images/default2.jpg' %}",
+                    "{% static 'images/default3.jpg' %}",
+                    "{% static 'images/default4.jpg' %}",
+                    "{% static 'images/default5.jpg' %}"
+                ];
+                const randomImage = defaultImages[Math.floor(Math.random() * defaultImages.length)];
+                setBackgroundImage(randomImage);
+            }
+
+            // Add loading spinner on form submission
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', () => {
+                    // Remove any existing loading spinner
+                    const existingSpinner = document.querySelector('.loading');
+                    if (existingSpinner) {
+                        existingSpinner.remove();
+                    }
+                    // Add new loading spinner
+                    form.insertAdjacentHTML('afterend', '<p class="loading">Loading...</p>');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
