@@ -67,35 +67,8 @@ This project uses:
 ## 📈 **Prediction Results**
 
 ### ✅ **Example Output:**
-```
-clouds
-Rain Prediction: No
+![image](https://github.com/user-attachments/assets/dd8f433f-0efa-4fc7-89af-c5651a1d2c3b)
 
-- **Current Weather**:
-  - City: Mumbai, IN
-  - Current Temperature: 28°C
-  - Feels Like: 29°C
-  - Minimum Temp: Predicted by ML (e.g., 26°C)
-  - Maximum Temp: Predicted by ML (e.g., 30°C)
-  - Humidity: 62%
-  - Weather Prediction: Haze
-  - Rain Prediction: YES
-
-- **Future Temperature Predictions**:
-  - 11:00: 27.7°C
-  - 12:00: 27.6°C
-  - 13:00: 27.5°C
-  - 14:00: 27.4°C
-  - 15:00: 27.3°C
-
-- **Future Humidity Predictions**:
-  - 11:00: 56.5%
-  - 12:00: 56.4%
-  - 13:00: 56.3%
-  - 14:00: 56.2%
-  - 15:00: 56.1%
-
-```
 
 ---
 
